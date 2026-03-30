@@ -112,6 +112,37 @@ input[type="number"] { font-family:'Space Mono',monospace; }
 .modal-aio p { font-size:13px; line-height:1.8; }
 
 @media(max-width:600px){ .form-grid,.form-grid-3{ grid-template-columns:1fr; } .full{ grid-column:1; } .score-overview{ grid-template-columns:1fr; } }
+
+/* History */
+.history-btn {
+  background: var(--surface2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 16px; font-family: 'Space Mono', monospace;
+  font-size: 11px; cursor: pointer; transition: all 0.2s;
+}
+.history-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.history-panel {
+  display: none; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.history-panel.show { display: block; animation: fadeUp 0.3s ease; }
+.history-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border);
+  margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+  background: var(--surface2);
+}
+.history-item:hover { border-color: var(--accent); }
+.history-item:last-child { margin-bottom: 0; }
+.history-item-left h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.history-item-left p { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
+.history-score {
+  font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700;
+}
+.history-empty { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); text-align: center; padding: 20px; }
 </style>
 </head>
 <body>
@@ -396,6 +427,17 @@ input[type="number"] { font-family:'Space Mono',monospace; }
 </div>
 
 <!-- Results -->
+<!-- 履歴パネル -->
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;display:none" id="historyBtnWrap">
+</div>
+<div class="history-panel" id="historyPanel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div class="card-title" style="margin-bottom:0">診断履歴</div>
+    <button class="history-btn" onclick="toggleHistory()">✕ 閉じる</button>
+  </div>
+  <div id="historyList"></div>
+</div>
+
 <div id="results">
   <div class="score-overview">
     <div class="score-big">
@@ -426,6 +468,7 @@ input[type="number"] { font-family:'Space Mono',monospace; }
   </div>
 
   <div class="actions">
+    <button class="btn-sm" onclick="saveToHistory()">💾 履歴に保存</button>
     <button class="btn-sm" onclick="copyText()">📋 テキストをコピー</button>
     <button class="btn-sm" onclick="downloadCsv()">⬇ CSVダウンロード</button>
     <button class="btn-sm" onclick="downloadPdf()">📄 PDFダウンロード</button>
@@ -652,6 +695,89 @@ async function autoFetchWithGemini() {
     btn.disabled = false;
     btn.textContent = '✨ Geminiで自動取得';
   }
+}
+
+
+// ============================================================
+// 診断履歴（localStorage）
+// ============================================================
+const HISTORY_KEY = 'aio_history';
+const MAX_HISTORY = 20;
+
+function saveToHistory() {
+  if (!lastResult) return;
+  const { client, result } = lastResult;
+  const history = getHistory();
+  const entry = {
+    id: Date.now(),
+    date: new Date().toLocaleDateString('ja-JP'),
+    client,
+    total: result.total,
+    items: result.items,
+    hpUrl: document.getElementById('hpUrl').value.trim(),
+  };
+  history.unshift(entry);
+  if (history.length > MAX_HISTORY) history.pop();
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  alert(`✓ 「${client}」の診断結果を履歴に保存しました！`);
+  renderHistoryList();
+}
+
+function getHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  } catch { return []; }
+}
+
+function toggleHistory() {
+  const panel = document.getElementById('historyPanel');
+  if (panel.className.includes('show')) {
+    panel.className = 'history-panel';
+  } else {
+    renderHistoryList();
+    panel.className = 'history-panel show';
+  }
+}
+
+function renderHistoryList() {
+  const history = getHistory();
+  const list = document.getElementById('historyList');
+  if (history.length === 0) {
+    list.innerHTML = '<div class="history-empty">まだ履歴がありません。診断後「💾 履歴に保存」を押してください。</div>';
+    return;
+  }
+  list.innerHTML = history.map(entry => {
+    const color = entry.total >= 70 ? 'var(--green)' : entry.total >= 40 ? 'var(--yellow)' : 'var(--red)';
+    return `<div class="history-item" onclick="loadHistory(${entry.id})">
+      <div class="history-item-left">
+        <h4>${entry.client}</h4>
+        <p>${entry.date}　${entry.hpUrl || ''}</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="history-score" style="color:${color}">${entry.total}<span style="font-size:12px;color:var(--muted)">/100</span></div>
+        <button onclick="event.stopPropagation();deleteHistory(${entry.id})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function loadHistory(id) {
+  const history = getHistory();
+  const entry = history.find(h => h.id === id);
+  if (!entry) return;
+  lastResult = { client: entry.client, result: { items: entry.items, total: entry.total } };
+  document.getElementById('clientName').value = entry.client;
+  if (entry.hpUrl) document.getElementById('hpUrl').value = entry.hpUrl;
+  renderResults(entry.client, { items: entry.items, total: entry.total }, buildPriorities(entry.items));
+  document.getElementById('historyPanel').className = 'history-panel';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('gasSection').style.display = 'block';
+}
+
+function deleteHistory(id) {
+  const history = getHistory().filter(h => h.id !== id);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  renderHistoryList();
 }
 
 let lastResult = null;
@@ -1207,7 +1333,38 @@ function downloadPdf() {
     + '.summary h3{font-size:11px;color:#c8281e;margin-bottom:6px}'
     + '.summary p{font-size:12px;line-height:1.8}'
     + '.footer{text-align:center;font-size:10px;color:#aaa;margin-top:12px;padding-top:10px;border-top:1px solid #e0e0dc}'
-    + '</style></head><body>'
+    + '
+/* History */
+.history-btn {
+  background: var(--surface2); color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 16px; font-family: 'Space Mono', monospace;
+  font-size: 11px; cursor: pointer; transition: all 0.2s;
+}
+.history-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.history-panel {
+  display: none; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.history-panel.show { display: block; animation: fadeUp 0.3s ease; }
+.history-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border);
+  margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+  background: var(--surface2);
+}
+.history-item:hover { border-color: var(--accent); }
+.history-item:last-child { margin-bottom: 0; }
+.history-item-left h4 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.history-item-left p { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
+.history-score {
+  font-family: 'Space Mono', monospace; font-size: 20px; font-weight: 700;
+}
+.history-empty { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--muted); text-align: center; padding: 20px; }
+</style></head><body>'
     + '<div class="header"><div>'
     + '<p style="font-size:10px;color:#888;margin-bottom:4px">SHO-SAN　AIO診断レポート</p>'
     + '<p style="font-size:11px;color:#888;margin-bottom:4px">平素より大変お世話になっております。<br>このたびはAIO診断をご依頼いただき、誠にありがとうございます。<br>診断結果をご報告申し上げます。</p>'

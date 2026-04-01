@@ -252,12 +252,11 @@ input[type="number"] { font-family:'Space Mono',monospace; }
     <div class="form-group">
       <label>全体評価</label>
       <select id="siteOverall">
-        <option value="">未評価</option>
-        <option value="A">A</option><option value="B">B</option>
-        <option value="C">C</option><option value="D">D</option><option value="E">E</option>
-      </select>
+       <div class="form-group" style="margin-top:10px">
+      <label>サイト基盤スコア（手入力・0〜20点）</label>
+      <input type="number" id="siteScore" placeholder="例：8" min="0" max="20" />
+      <span class="hint">入力した点数がそのまま反映されます（空欄の場合はA〜Eから自動計算）</span>
     </div>
-  </div>
 
   <div class="section-label">SNS（フォロワー数）</div>
   <div class="form-grid-3">
@@ -343,19 +342,10 @@ input[type="number"] { font-family:'Space Mono',monospace; }
     <div class="form-group">
       <label>会社概要・サービス説明</label>
       <select id="gbpDesc">
-        <option value="0">なし</option>
-        <option value="1">あり</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>投稿（Googleポスト）</label>
-      <select id="gbpPost">
-        <option value="0">なし</option>
-        <option value="-1">更新停止</option>
-        <option value="1">定期投稿あり</option>
-      </select>
-    </div>
-  </div>
+  <option value="0">なし</option>
+  <option value="1">あり（KW対策なし）</option>
+  <option value="2">あり（KW対策あり・商品登録あり）</option>
+</select>
 
   <div class="section-label">独自コンテンツ</div>
   <div class="form-grid">

@@ -252,7 +252,14 @@ input[type="number"] { font-family:'Space Mono',monospace; }
     <div class="form-group">
       <label>全体評価</label>
       <select id="siteOverall">
+        <option value="">未評価</option>
+  <option value="A">A</option>
+  <option value="B">B</option>
+  <option value="C">C</option>
+  <option value="D">D</option>
+  <option value="E">E</option>
         </select>
+      </div>
        <div class="form-group" style="margin-top:10px">
       <label>サイト基盤スコア（手入力・0〜20点）</label>
       <input type="number" id="siteScore" placeholder="例：8" min="0" max="20" />

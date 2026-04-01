@@ -717,6 +717,33 @@ function saveToHistory() {
     total: result.total,
     items: result.items,
     hpUrl: document.getElementById('hpUrl').value.trim(),
+    formData: {
+      scale: document.getElementById('scale').value,
+      dr: document.getElementById('dr').value,
+      siteRobots: document.getElementById('siteRobots').value,
+      siteSitemap: document.getElementById('siteSitemap').value,
+      siteJsonld: document.getElementById('siteJsonld').value,
+      siteOverall: document.getElementById('siteOverall').value,
+      igFollowers: document.getElementById('igFollowers').value,
+      igFreq: document.getElementById('igFreq').value,
+      igReel: document.getElementById('igReel').value,
+      ytSubs: document.getElementById('ytSubs').value,
+      ytFreq: document.getElementById('ytFreq').value,
+      ttFollowers: document.getElementById('ttFollowers').value,
+      ttFreq: document.getElementById('ttFreq').value,
+      gbpReviews: document.getElementById('gbpReviews').value,
+      gbpRating: document.getElementById('gbpRating').value,
+      gbpPhotos: document.getElementById('gbpPhotos').value,
+      gbpReply: document.getElementById('gbpReply').value,
+      gbpDesc: document.getElementById('gbpDesc').value,
+      gbpPost: document.getElementById('gbpPost').value,
+      interviewVideo: document.getElementById('interviewVideo').value,
+      interviewArticle: document.getElementById('interviewArticle').value,
+      faq: document.getElementById('faq').value,
+      columnCount: document.getElementById('columnCount').value,
+      columnFreq: document.getElementById('columnFreq').value,
+      pr: document.getElementById('pr').value,
+    }
   };
   history.unshift(entry);
   if (history.length > MAX_HISTORY) history.pop();

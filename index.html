@@ -1017,6 +1017,13 @@ function calcScore(v) {
   items.push({ category:'独自コンテンツ', name:'お施主様インタビュー', rating:intRating, score:intScore, max:10, comment:intComment });
 
   // FAQ
+let faqScore = 0, faqRating = '×', faqComment = '';
+if (faq === 3)       { faqRating='◎'; faqScore=10; faqComment='100問以上・KW対応。AI Overview・ChatGPTで最も引用されやすい状態。'; }
+else if (faq === 2)  { faqRating='○'; faqScore=7;  faqComment='50問以上・KW対応。AI引用率が高い良好な状態。100問以上を目指すと◎に。'; }
+else if (faq === 1)  { faqRating='△'; faqScore=4;  faqComment='FAQ10〜20問あるが件数が少ない。50問以上・KW対応にするとAI引用率が大幅向上。'; }
+else if (faq === -1) { faqRating='×'; faqScore=0;  faqComment='FAQはあるがKW対策・AIO対応がされていない。質問をKW対応に見直す必要あり。'; }
+else                 { faqRating='×'; faqScore=0;  faqComment='FAQなし。家づくりのよくある質問を記事化すべき。AIが最も引用しやすいコンテンツ形式。'; }
+items.push({ category:'独自コンテンツ', name:'独自コンテンツ(FAQ等)', rating:faqRating, score:faqScore, max:10, comment:faqComment });
   let faqScore = 0, faqRating = '×', faqComment = '';
   pts = faq === 2 ? 5 : faq === 1 ? 2 : 0;
   faqRating = pts >= 5 ? '◎' : pts >= 4 ? '○' : pts >= 2 ? '△' : '×';

@@ -143,7 +143,8 @@ input[type="number"] { font-family:'Space Mono',monospace; }
 
 .ck input[type="radio"] { width:16px; height:16px; accent-color:var(--accent); cursor:pointer; flex-shrink:0; }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
 async function captureModal() {
   const modal = document.querySelector('.modal');
   const canvas = await html2canvas(modal, { scale: 2, backgroundColor: '#ffffff' });
@@ -152,7 +153,6 @@ async function captureModal() {
       await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
       alert('クリップボードにコピーしました！Cmd+Vで貼り付けできます。');
     } catch(e) {
-      // クリップボードが失敗したらダウンロードにフォールバック
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = '診断示唆_' + new Date().toISOString().slice(0,10) + '.png';
@@ -1439,7 +1439,7 @@ const SUGGESTIONS = {
   'お施主様インタビュー': {
     good: { status:'インタビュー動画・記事ともに充実しており、E-E-A-Tが高い状態。', issue:'さらに件数を増やしAI引用率を高めたい。', actions:['インタビューにQ&A形式のテキストを追加してFAQスキーマを実装する','地域名・家の特徴をタイトルに入れてAI検索への引用を狙う','YouTubeとHPの両方に掲載してAIの参照ポイントを増やす'], aio:'お施主様インタビューはE-E-A-T（経験）を証明する最強コンテンツ。AIが「実際に建てた人の声」として引用しやすい。' },
     mid:  { status:'インタビューが少ないか、動画または記事どちらかのみの状態。', issue:'件数・形式が不十分でAI引用率が低い。', actions:['動画＋記事のセットで制作する（動画だけでは引用されにくい）','Q&A形式で「不安だったこと」「決め手」「住み心地」を必ず入れる','月1件を目標に制作スケジュールを組む'], aio:'AIはテキストと動画の両方があるインタビューを優先引用する。「動画あり＋Q&A記事あり」の形式が最もAI引用率が高い。' },
-    bad:  { status:'インタビューコンテンツがない状態。', issue:'実際の施主の声がなくE-E-A-Tが低く評価されている。', actions:['過去のお客様にLINEで動画撮影の依頼をする（5分のインタビューでOK）','「不安だったこと・決め手・住んでみて」の3問だけでも十分','まず3件制作してHPとYouTubeに掲載する'], aio:'お施主様インタビューはAIが最も引用しやすいコンテンツの1つ。「地域×注文住宅 口コミ」のクエリで直接引用される。今すぐ制作開始が必要。' }
+    bad:  { status:'お施主様インタビューはあるが動画形式・FAQ形式での記事化がされていない状態。', issue:'テキストのみ・KW対策なしのためAIに引用されにくく、E-E-A-Tが低い。', actions:['既存のお客様の声を動画インタビュー形式に切り替える（5分のインタビューでOK）','記事はQ&A形式で「不安だったこと・決め手・住んでみて」を必ず入れる','動画＋記事のセットでHPとYouTubeに掲載する'], aio:'お施主様インタビューはAIが最も引用しやすいコンテンツの1つ。動画＋FAQ形式の記事セットにすることでAI引用率が大幅に上がる。' }
   },
   '独自コンテンツ(FAQ等)': {
     good: { status:'FAQが充実しており、AI引用の土台ができている。', issue:'FAQスキーマの実装でさらにAI引用率を上げられる。', actions:['FAQPageスキーマ（JSON-LD）を実装してAI Overviewへの直接引用を狙う','「地域×家づくり」に特化したQ&Aを50問以上に増やす','競合がカバーしていない専門的な質問を追加する'], aio:'FAQはAI Overviewに最も直接引用されるコンテンツ形式。FAQスキーマを実装するとAIが回答をそのまま引用する確率が大幅に上がる。' },

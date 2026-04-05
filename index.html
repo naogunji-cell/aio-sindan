@@ -1179,7 +1179,7 @@ function calcScore(v) {
     siteScore = 0; siteRating = '×';
     const details = [siteRobots ? 'robots.txt:'+siteRobots : null, siteSitemap ? 'sitemap:'+siteSitemap : null, siteJsonld ? 'JSON-LD:'+siteJsonld : null].filter(Boolean).join(' / ');
     siteComment = details ? details+'。全体評価を入力するとスコアに反映されます。' : '未評価。他ツールで診断後に入力してください。';
-  }
+  }items.push({ category:'サイト土台', name:'サイト基盤', rating:siteRating, score:siteScore, max:20, comment:siteComment });
 
   // DR
   let drScore = 0, drRating = '×', drComment = '';

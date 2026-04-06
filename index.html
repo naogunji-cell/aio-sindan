@@ -1678,7 +1678,13 @@ function calcScore(v) {
   else if (igReel !== 2) {
     const reelOtherText = v.igReelOtherText ? `（${v.igReelOtherText}）` : '';
     const rl = igReel===-1?'リール更新停止':igReel===0?'リールなし':`リールはあるがその他参照${reelOtherText}`;
-    igComment = `フォロワー${igFollowers.toLocaleString()}人だが${rl}。定期投稿（週2回以上）開始が必要。`;
+    if (igReel === 1) {
+      // その他 → △固定
+      igRating = '△'; igScore = 8;
+      igComment = `フォロワー${igFollowers.toLocaleString()}人。リールはあるがその他参照${reelOtherText}。定期投稿（週2回以上）への移行で評価アップ可能。`;
+    } else {
+      igComment = `フォロワー${igFollowers.toLocaleString()}人だが${rl}。定期投稿（週2回以上）開始が必要。`;
+    }
   } else {
     let pts = 0;
     if      (igFollowers>=10000) pts+=8;

@@ -1461,7 +1461,52 @@ function loadHistory(id) {
     chkIg(); chkYt(); chkTt(); chkGbp(); chkCont(); chkCol(); chkPr();
     calcIgEng();
   }
-  renderResults(entry.client, { items: entry.items, total: entry.total }, buildPriorities(entry.items), entry.formData || { dr: '' });
+  // フォームの値を使って再診断
+  const _v = {
+    scale: document.getElementById('scale').value,
+    dr: document.getElementById('dr').value,
+    siteRobots: document.getElementById('siteRobots').value,
+    siteSitemap: document.getElementById('siteSitemap').value,
+    siteJsonld: document.getElementById('siteJsonld').value,
+    siteOverall: document.getElementById('siteOverall').value,
+    siteScore: document.getElementById('siteScore').value,
+    igFollowers: document.getElementById('igFollowers').value,
+    igFreq: document.getElementById('igFreq').value,
+    igReel: document.getElementById('igReel').value,
+    igEngagement: document.getElementById('igEngagement').value,
+    igAvgLikes: document.getElementById('igAvgLikes').value,
+    igAvgSaves: document.getElementById('igAvgSaves').value,
+    igAvgComments: document.getElementById('igAvgComments').value,
+    ytSubs: document.getElementById('ytSubs').value,
+    ytShorts: document.getElementById('ytShorts').value,
+    ytFreq: document.getElementById('ytFreq').value,
+    ttFollowers: document.getElementById('ttFollowers').value,
+    ttFreq: document.getElementById('ttFreq').value,
+    gbpReviews: document.getElementById('gbpMode').value==='multi' ? document.getElementById('gbpReviewsM')?.value||'0' : document.getElementById('gbpReviews')?.value||'0',
+    gbpRating:  document.getElementById('gbpMode').value==='multi' ? document.getElementById('gbpRatingM')?.value||'0'  : document.getElementById('gbpRating')?.value||'0',
+    gbpPhotos:  document.getElementById('gbpMode').value==='multi' ? document.getElementById('gbpPhotosM')?.value||'0'  : document.getElementById('gbpPhotos')?.value||'0',
+    gbpReply: document.getElementById('gbpReply').value,
+    gbpDesc:  document.getElementById('gbpDesc').value,
+    gbpPost:  document.getElementById('gbpPost').value,
+    gbpMode:  document.getElementById('gbpMode').value,
+    gbpStoreCount: document.getElementById('gbpStoreCount')?.value||'1',
+    gbpTotalStores: document.getElementById('gbpTotalStores')?.value||'0',
+    gbpNgPost:  document.getElementById('gbpNgPost')?.value||'0',
+    gbpNgReply: document.getElementById('gbpNgReply')?.value||'0',
+    gbpNgBuild: document.getElementById('gbpNgBuild')?.value||'0',
+    gbpReplyMulti: document.getElementById('gbp_m_reply_ok')?.checked ? '2' : '1',
+    gbpDescMulti:  document.getElementById('gbp_m_desc_kw')?.checked  ? '2' : '1',
+    interviewVideo:   document.getElementById('interviewVideo').value,
+    interviewArticle: document.getElementById('interviewArticle').value,
+    faq:         document.getElementById('faq').value,
+    columnCount: document.getElementById('columnCount').value,
+    columnFreq:  document.getElementById('columnFreq').value,
+    pr:          document.getElementById('pr').value,
+  };
+  const _result = calcScore(_v);
+  const _priorities = buildPriorities(_result.items);
+  lastResult = { client: entry.client, hpUrl: entry.hpUrl || '', v: _v, result: _result };
+  renderResults(entry.client, _result, _priorities, _v);
   document.getElementById('historyPanel').className = 'history-panel';
   document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
   document.getElementById('gasSection').style.display = 'block';

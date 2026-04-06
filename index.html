@@ -1629,9 +1629,9 @@ function calcScore(v) {
     else pts+=1;
     if (igFreq===3) pts+=6; else if (igFreq===2) pts+=4; else if (igFreq===1) pts+=2;
     pts+=6;
-    if      (igEngagement2===2)  pts+=2;
-    else if (igEngagement2===0)  pts-=3;
-    else if (igEngagement2===-1) pts-=6;
+    if      (igEngagement2===2)  pts+=0.5;
+    else if (igEngagement2===0)  pts-=0.5;
+    else if (igEngagement2===-1) pts-=1;
     igScore = Math.min(Math.max(pts,0),20);
     igRating = igScore>=15?'◎':igScore>=11?'○':igScore>=7?'△':'×';
     if (igEngagement2<=0 && (igRating==='◎'||igRating==='○')) igRating='△';

@@ -385,12 +385,17 @@ async function captureModal() {
       <span class="acc-caret" id="gbp-caret">▼</span>
     </div>
     <div class="acc-bd" id="gbp-bd">
-      <!-- 店舗形態トグル -->
-      <div style="display:flex;gap:6px;margin-bottom:14px">
-       <button class="toggle-btn active" id="gbp_single_btn" onclick="setGbpMode('single')">1〜数店舗</button>
-        <button class="toggle-btn" id="gbp_multi_btn" onclick="setGbpMode('multi')">多店舗チェーン（FC）</button>
+      <!-- 店舗数トグル -->
+      <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="toggle-btn active" id="gbp_n1_btn" onclick="setGbpStores(1)">1店舗</button>
+        <button class="toggle-btn" id="gbp_n2_btn" onclick="setGbpStores(2)">2店舗</button>
+        <button class="toggle-btn" id="gbp_n3_btn" onclick="setGbpStores(3)">3店舗</button>
+        <button class="toggle-btn" id="gbp_n4_btn" onclick="setGbpStores(4)">4店舗</button>
+        <button class="toggle-btn" id="gbp_n5_btn" onclick="setGbpStores(5)">5店舗</button>
+        <button class="toggle-btn" id="gbp_multi_btn" onclick="setGbpStores(99)">6店舗以上（FC）</button>
       </div>
       <input type="hidden" id="gbpMode" value="single">
+      <input type="hidden" id="gbpStoreCount" value="1">
 
       <!-- 1店舗 -->
       <div id="gbp_single_area">
@@ -427,6 +432,241 @@ async function captureModal() {
           <div class="form-group" style="flex:1"><label>平均評価</label><input type="number" id="gbpRating" placeholder="例：4.2" min="0" max="5" step="0.1" oninput="chkGbp()"></div>
           <div class="form-group" style="flex:1"><label>写真枚数</label><input type="number" id="gbpPhotos" placeholder="例：30" min="0" oninput="chkGbp()"></div>
         </div>
+      </div>
+
+      <!-- 2店舗目 -->
+      <div id="gbp_store2_area" style="display:none;margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface2)">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--accent);margin-bottom:10px">2店舗目</div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">GOOGLE ポスト</div>
+          <label class="ck"><input type="radio" name="gbp_post_r2" value="0" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_post_r2" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_post_r2" value="1" onchange="chkGbpAll()"> 定期投稿あり</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">口コミ返信</div>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="0" onchange="chkGbpAll()"> 返信なし</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="1" onchange="chkGbpAll()"> 一部返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="2" onchange="chkGbpAll()"> ほぼ全件返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="3" onchange="chkGbpAll()"> 全件返信</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">初期構築</div>
+          <label class="ck"><input type="radio" name="gbp_build_r2" value="none" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_build_r2" value="some" onchange="chkGbpAll()"> あり（KW対策済）</label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:80px"><label>口コミ件数</label><input type="number" id="gbpReviews2" placeholder="例：15" min="0" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>平均評価</label><input type="number" id="gbpRating2" placeholder="例：4.2" min="0" max="5" step="0.1" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>写真枚数</label><input type="number" id="gbpPhotos2" placeholder="例：30" min="0" oninput="chkGbpAll()"></div>
+        </div>
+        <div id="gbp_store2_status" style="font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;color:var(--muted)"></div>
+      </div>
+      <!-- 3店舗目 -->
+      <div id="gbp_store3_area" style="display:none;margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface2)">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--accent);margin-bottom:10px">3店舗目</div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">GOOGLE ポスト</div>
+          <label class="ck"><input type="radio" name="gbp_post_r3" value="0" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_post_r3" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_post_r3" value="1" onchange="chkGbpAll()"> 定期投稿あり</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">口コミ返信</div>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="0" onchange="chkGbpAll()"> 返信なし</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="1" onchange="chkGbpAll()"> 一部返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="2" onchange="chkGbpAll()"> ほぼ全件返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="3" onchange="chkGbpAll()"> 全件返信</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">初期構築</div>
+          <label class="ck"><input type="radio" name="gbp_build_r3" value="none" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_build_r3" value="some" onchange="chkGbpAll()"> あり（KW対策済）</label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:80px"><label>口コミ件数</label><input type="number" id="gbpReviews3" placeholder="例：15" min="0" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>平均評価</label><input type="number" id="gbpRating3" placeholder="例：4.2" min="0" max="5" step="0.1" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>写真枚数</label><input type="number" id="gbpPhotos3" placeholder="例：30" min="0" oninput="chkGbpAll()"></div>
+        </div>
+        <div id="gbp_store3_status" style="font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;color:var(--muted)"></div>
+      </div>
+      <!-- 4店舗目 -->
+      <div id="gbp_store4_area" style="display:none;margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface2)">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--accent);margin-bottom:10px">4店舗目</div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">GOOGLE ポスト</div>
+          <label class="ck"><input type="radio" name="gbp_post_r4" value="0" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_post_r4" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_post_r4" value="1" onchange="chkGbpAll()"> 定期投稿あり</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">口コミ返信</div>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="0" onchange="chkGbpAll()"> 返信なし</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="1" onchange="chkGbpAll()"> 一部返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="2" onchange="chkGbpAll()"> ほぼ全件返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="3" onchange="chkGbpAll()"> 全件返信</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">初期構築</div>
+          <label class="ck"><input type="radio" name="gbp_build_r4" value="none" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_build_r4" value="some" onchange="chkGbpAll()"> あり（KW対策済）</label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:80px"><label>口コミ件数</label><input type="number" id="gbpReviews4" placeholder="例：15" min="0" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>平均評価</label><input type="number" id="gbpRating4" placeholder="例：4.2" min="0" max="5" step="0.1" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>写真枚数</label><input type="number" id="gbpPhotos4" placeholder="例：30" min="0" oninput="chkGbpAll()"></div>
+        </div>
+        <div id="gbp_store4_status" style="font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;color:var(--muted)"></div>
+      </div>
+      <!-- 5店舗目 -->
+      <div id="gbp_store5_area" style="display:none;margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface2)">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--accent);margin-bottom:10px">5店舗目</div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">GOOGLE ポスト</div>
+          <label class="ck"><input type="radio" name="gbp_post_r5" value="0" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_post_r5" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_post_r5" value="1" onchange="chkGbpAll()"> 定期投稿あり</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">口コミ返信</div>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="0" onchange="chkGbpAll()"> 返信なし</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="1" onchange="chkGbpAll()"> 一部返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="2" onchange="chkGbpAll()"> ほぼ全件返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="3" onchange="chkGbpAll()"> 全件返信</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">初期構築</div>
+          <label class="ck"><input type="radio" name="gbp_build_r5" value="none" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_build_r5" value="some" onchange="chkGbpAll()"> あり（KW対策済）</label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:80px"><label>口コミ件数</label><input type="number" id="gbpReviews5" placeholder="例：15" min="0" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>平均評価</label><input type="number" id="gbpRating5" placeholder="例：4.2" min="0" max="5" step="0.1" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>写真枚数</label><input type="number" id="gbpPhotos5" placeholder="例：30" min="0" oninput="chkGbpAll()"></div>
+        </div>
+        <div id="gbp_store5_status" style="font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;color:var(--muted)"></div>
+      </div>
+
+
+      <!-- 2店舗目 -->
+      <div id="gbp_store2_area" style="display:none;margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface2)">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--accent);margin-bottom:10px">2店舗目</div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">GOOGLE ポスト</div>
+          <label class="ck"><input type="radio" name="gbp_post_r2" value="0" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_post_r2" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_post_r2" value="1" onchange="chkGbpAll()"> 定期投稿あり</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">口コミ返信</div>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="0" onchange="chkGbpAll()"> 返信なし</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="1" onchange="chkGbpAll()"> 一部返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="2" onchange="chkGbpAll()"> ほぼ全件返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r2" value="3" onchange="chkGbpAll()"> 全件返信</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">初期構築</div>
+          <label class="ck"><input type="radio" name="gbp_build_r2" value="none" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_build_r2" value="some" onchange="chkGbpAll()"> あり（KW対策済）</label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:80px"><label>口コミ件数</label><input type="number" id="gbpReviews2" placeholder="例：15" min="0" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>平均評価</label><input type="number" id="gbpRating2" placeholder="例：4.2" min="0" max="5" step="0.1" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>写真枚数</label><input type="number" id="gbpPhotos2" placeholder="例：30" min="0" oninput="chkGbpAll()"></div>
+        </div>
+        <div id="gbp_store2_status" style="font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;color:var(--muted)"></div>
+      </div>
+      <!-- 3店舗目 -->
+      <div id="gbp_store3_area" style="display:none;margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface2)">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--accent);margin-bottom:10px">3店舗目</div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">GOOGLE ポスト</div>
+          <label class="ck"><input type="radio" name="gbp_post_r3" value="0" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_post_r3" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_post_r3" value="1" onchange="chkGbpAll()"> 定期投稿あり</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">口コミ返信</div>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="0" onchange="chkGbpAll()"> 返信なし</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="1" onchange="chkGbpAll()"> 一部返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="2" onchange="chkGbpAll()"> ほぼ全件返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r3" value="3" onchange="chkGbpAll()"> 全件返信</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">初期構築</div>
+          <label class="ck"><input type="radio" name="gbp_build_r3" value="none" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_build_r3" value="some" onchange="chkGbpAll()"> あり（KW対策済）</label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:80px"><label>口コミ件数</label><input type="number" id="gbpReviews3" placeholder="例：15" min="0" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>平均評価</label><input type="number" id="gbpRating3" placeholder="例：4.2" min="0" max="5" step="0.1" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>写真枚数</label><input type="number" id="gbpPhotos3" placeholder="例：30" min="0" oninput="chkGbpAll()"></div>
+        </div>
+        <div id="gbp_store3_status" style="font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;color:var(--muted)"></div>
+      </div>
+      <!-- 4店舗目 -->
+      <div id="gbp_store4_area" style="display:none;margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface2)">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--accent);margin-bottom:10px">4店舗目</div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">GOOGLE ポスト</div>
+          <label class="ck"><input type="radio" name="gbp_post_r4" value="0" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_post_r4" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_post_r4" value="1" onchange="chkGbpAll()"> 定期投稿あり</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">口コミ返信</div>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="0" onchange="chkGbpAll()"> 返信なし</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="1" onchange="chkGbpAll()"> 一部返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="2" onchange="chkGbpAll()"> ほぼ全件返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r4" value="3" onchange="chkGbpAll()"> 全件返信</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">初期構築</div>
+          <label class="ck"><input type="radio" name="gbp_build_r4" value="none" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_build_r4" value="some" onchange="chkGbpAll()"> あり（KW対策済）</label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:80px"><label>口コミ件数</label><input type="number" id="gbpReviews4" placeholder="例：15" min="0" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>平均評価</label><input type="number" id="gbpRating4" placeholder="例：4.2" min="0" max="5" step="0.1" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>写真枚数</label><input type="number" id="gbpPhotos4" placeholder="例：30" min="0" oninput="chkGbpAll()"></div>
+        </div>
+        <div id="gbp_store4_status" style="font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;color:var(--muted)"></div>
+      </div>
+      <!-- 5店舗目 -->
+      <div id="gbp_store5_area" style="display:none;margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:14px;background:var(--surface2)">
+        <div style="font-family:'Space Mono',monospace;font-size:10px;font-weight:700;color:var(--accent);margin-bottom:10px">5店舗目</div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">GOOGLE ポスト</div>
+          <label class="ck"><input type="radio" name="gbp_post_r5" value="0" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_post_r5" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_post_r5" value="1" onchange="chkGbpAll()"> 定期投稿あり</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">口コミ返信</div>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="0" onchange="chkGbpAll()"> 返信なし</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="-1" onchange="chkGbpAll()"> 更新停止</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="1" onchange="chkGbpAll()"> 一部返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="2" onchange="chkGbpAll()"> ほぼ全件返信</label>
+          <label class="ck"><input type="radio" name="gbp_reply_r5" value="3" onchange="chkGbpAll()"> 全件返信</label>
+        </div>
+        <div style="margin-bottom:10px">
+          <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--accent);margin-bottom:6px">初期構築</div>
+          <label class="ck"><input type="radio" name="gbp_build_r5" value="none" onchange="chkGbpAll()"> なし</label>
+          <label class="ck"><input type="radio" name="gbp_build_r5" value="some" onchange="chkGbpAll()"> あり（KW対策済）</label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="form-group" style="flex:1;min-width:80px"><label>口コミ件数</label><input type="number" id="gbpReviews5" placeholder="例：15" min="0" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>平均評価</label><input type="number" id="gbpRating5" placeholder="例：4.2" min="0" max="5" step="0.1" oninput="chkGbpAll()"></div>
+          <div class="form-group" style="flex:1;min-width:80px"><label>写真枚数</label><input type="number" id="gbpPhotos5" placeholder="例：30" min="0" oninput="chkGbpAll()"></div>
+        </div>
+        <div id="gbp_store5_status" style="font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;color:var(--muted)"></div>
       </div>
 
       <!-- 多店舗（FC） -->
@@ -727,11 +967,94 @@ function chkTt() {
 
 // ===== GBP =====
 function setGbpMode(mode) {
-  sv('gbpMode', mode);
-  document.getElementById('gbp_single_area').style.display = mode==='single'?'block':'none';
-  document.getElementById('gbp_multi_area').style.display  = mode==='multi'?'block':'none';
-  document.getElementById('gbp_single_btn').className = 'toggle-btn' + (mode==='single'?' active':'');
-  document.getElementById('gbp_multi_btn').className  = 'toggle-btn' + (mode==='multi'?' active':'');
+  // 後方互換用（loadHistoryから呼ばれる可能性あり）
+  setGbpStores(mode === 'single' ? 1 : 99);
+}
+
+function setGbpStores(n) {
+  const isFc = n === 99;
+  sv('gbpMode', isFc ? 'multi' : 'single');
+  sv('gbpStoreCount', String(n));
+
+  // トグルボタン
+  [1,2,3,4,5].forEach(i => {
+    const btn = document.getElementById('gbp_n' + i + '_btn');
+    if (btn) btn.className = 'toggle-btn' + (n === i ? ' active' : '');
+  });
+  const fcBtn = document.getElementById('gbp_multi_btn');
+  if (fcBtn) fcBtn.className = 'toggle-btn' + (isFc ? ' active' : '');
+
+  // エリア表示
+  document.getElementById('gbp_single_area').style.display = !isFc ? 'block' : 'none';
+  [2,3,4,5].forEach(i => {
+    const el = document.getElementById('gbp_store' + i + '_area');
+    if (el) el.style.display = (!isFc && n >= i) ? 'block' : 'none';
+  });
+  document.getElementById('gbp_multi_area').style.display = isFc ? 'block' : 'none';
+
+  chkGbpAll();
+}
+
+function chkGbpAll() {
+  const n = parseInt(document.getElementById('gbpStoreCount')?.value || '1');
+  const isFc = document.getElementById('gbpMode')?.value === 'multi';
+  if (isFc) { chkGbpMulti(); return; }
+
+  // 1〜5店舗モード：全店舗チェック
+  let hasNg = false;
+  let totalReviews = 0, totalRating = 0, totalPhotos = 0, totalReply = 0, totalDesc = 0, totalPost = 0;
+
+  for (let i = 1; i <= n; i++) {
+    const suffix = i === 1 ? '' : String(i);
+    const post  = parseInt((() => { for(const r of document.querySelectorAll('input[name="gbp_post_r' + suffix + '"]')) if(r.checked) return r.value; return '0'; })());
+    const reply = parseInt((() => { for(const r of document.querySelectorAll('input[name="gbp_reply_r' + suffix + '"]')) if(r.checked) return r.value; return '0'; })());
+    const build = (() => { for(const r of document.querySelectorAll('input[name="gbp_build_r' + suffix + '"]')) if(r.checked) return r.value; return 'none'; })();
+    const desc  = build === 'none' ? 0 : 2;
+
+    if (i === 1) {
+      // 1店舗目はサブチェックも反映
+      const hasProduct = document.getElementById('gbp_has_product')?.checked;
+      const buildSub = document.getElementById('gbp_build_sub');
+      if (buildSub) buildSub.style.display = build === 'some' ? 'block' : 'none';
+    }
+
+    const reviews = parseFloat(document.getElementById('gbpReviews' + (i===1?'':i))?.value) || 0;
+    const rating  = parseFloat(document.getElementById('gbpRating'  + (i===1?'':i))?.value) || 0;
+    const photos  = parseFloat(document.getElementById('gbpPhotos'  + (i===1?'':i))?.value) || 0;
+
+    if (post === 0 || post === -1 || reply === 0 || reply === -1 || build === 'none') hasNg = true;
+
+    // ×店舗のステータス表示
+    if (i > 1) {
+      const el = document.getElementById('gbp_store' + i + '_status');
+      if (el) {
+        const ng = post===0||post===-1||reply===0||reply===-1||build==='none';
+        el.textContent = ng ? '⚠ ×条件あり → 全体評価×' : '✓ クリア';
+        el.style.color = ng ? 'var(--red)' : 'var(--green)';
+      }
+    }
+
+    totalReviews += reviews; totalRating += rating; totalPhotos += photos;
+    totalReply += reply; totalDesc += desc; totalPost += post;
+  }
+
+  // hidden値は1店舗目の値を使用（スコア計算は全店舗チェック結果で上書き）
+  const post1  = parseInt((() => { for(const r of document.querySelectorAll('input[name="gbp_post_r"]')) if(r.checked) return r.value; return '0'; })());
+  const reply1 = parseInt((() => { for(const r of document.querySelectorAll('input[name="gbp_reply_r"]')) if(r.checked) return r.value; return '0'; })());
+  const build1 = (() => { for(const r of document.querySelectorAll('input[name="gbp_build_r"]')) if(r.checked) return r.value; return 'none'; })();
+  const hasProduct1 = document.getElementById('gbp_has_product')?.checked;
+  const desc1 = build1 === 'none' ? 0 : hasProduct1 ? 2 : 1;
+
+  sv('gbpPost',  hasNg ? '-2' : String(post1));   // -2=多店舗NG
+  sv('gbpReply', hasNg ? '-2' : String(reply1));
+  sv('gbpDesc',  hasNg ? '-2' : String(desc1));
+
+  // バッジ
+  const badge = document.getElementById('gbp-badge');
+  if (!badge) return;
+  if (hasNg) { badge.textContent='× 要対応あり'; badge.className='acc-badge bad'; }
+  else if (reply1===3||reply1===2) { badge.textContent='○ 良好'; badge.className='acc-badge good'; }
+  else { badge.textContent='△ 一部対応'; badge.className='acc-badge mid'; }
 }
 
 function chkGbp() {
@@ -1344,7 +1667,14 @@ function calcScore(v) {
     return { score, rating, comment };
   }
 
-  if (gbpMode === 'single') {
+  // 多店舗NG(-2)チェック
+  const gbpMultiNg = gbpPost === -2 || gbpReply === -2 || gbpDesc === -2;
+
+  if (gbpMultiNg) {
+    gbpScore=0; gbpRating='×';
+    const storeCount = parseInt(v.gbpStoreCount)||1;
+    gbpComment = `【${storeCount}店舗】×条件の店舗があるため全体評価×。各店舗のポスト・返信・構築を確認してください。`;
+  } else if (gbpMode === 'single') {
     const r = calcGbpSingle(
       parseFloat(v.gbpReviews)||0, parseFloat(v.gbpRating)||0, parseFloat(v.gbpPhotos)||0,
       parseInt(v.gbpReply)||0, parseInt(v.gbpDesc)||0, parseInt(v.gbpPost)||0
@@ -1557,6 +1887,8 @@ function runDiagnosis() {
     gbpDesc:  document.getElementById('gbpDesc').value,
     gbpPost:  document.getElementById('gbpPost').value,
     gbpMode:  document.getElementById('gbpMode').value,
+    gbpStoreCount: document.getElementById('gbpStoreCount')?.value||'1',
+    gbpStoreCount: document.getElementById('gbpStoreCount')?.value||'1',
     gbpTotalStores: document.getElementById('gbpTotalStores')?.value||'0',
     gbpNgPost:  document.getElementById('gbpNgPost')?.value||'0',
     gbpNgReply: document.getElementById('gbpNgReply')?.value||'0',

@@ -1633,7 +1633,8 @@ function calcScore(v) {
     else if (igEngagement2===0)  pts-=0.5;
     else if (igEngagement2===-1) pts-=1;
     igScore = Math.min(Math.max(pts,0),20);
-    igRating = igScore>=15?'◎':igScore>=11?'○':igScore>=7?'△':'×';
+    const canMaru = igFollowers >= 10000 && igEngagement2 === 2 && igFreq === 3;
+    igRating = (canMaru && igScore>=15)?'◎':igScore>=11?'○':igScore>=7?'△':'×';
     if (igEngagement2<=0 && (igRating==='◎'||igRating==='○')) igRating='△';
     igScore = igRating==='◎'?20:igRating==='○'?14:igRating==='△'?8:0;
     const fl={'-1':'更新停止','0':'未運用','1':'月1〜3回','2':'週1〜2回','3':'週3回以上'}[String(igFreq)]||'';

@@ -1967,7 +1967,7 @@ function closeModal(e) { if (e.target === document.getElementById('modalOverlay'
 
 function buildPriorities(items) {
   const msgs = {
-    'Googleビジネスプロフィール': { title:'GBP強化（最優先）', desc:'会社概要記入・口コミ返信・Googleポスト投稿を今日から開始。最短で点数が伸びる施策。' },
+    'Googleビジネスプロフィール': { title:'GBP強化', desc:'会社概要記入・口コミ返信・Googleポスト投稿を今日から開始。最短で点数が伸びる施策。' },
     'ドメインパワー(DR)':         { title:'DR向上（被リンク獲得）', desc:'PRTIMESでのプレスリリース配信・メディア掲載でDRを目標値に引き上げる。' },
     'サイト基盤':                  { title:'サイト基盤の整備', desc:'robots.txt・sitemap・JSON-LDを整備してAIクローラーが正しくサイトを認識できる状態にする。' },
     'Instagram':                  { title:'Instagram強化', desc:'リール定期投稿（週2本以上）を開始。フォロワー増加とエンゲージメント改善が急務。' },
@@ -1978,8 +1978,10 @@ function buildPriorities(items) {
     'コラム':                     { title:'コラム定期更新', desc:'月1本以上のペースで専門コンテンツを発信。AIの情報収集源として継続的な更新が必要。' },
     'プレスリリース/メディア掲載': { title:'PR・メディア掲載', desc:'PRTIMESで月1本配信。被リンク獲得とDR向上に直結する。' },
   };
-  const low = items.filter(i => i.rating === '×').sort((a,b) => b.max - a.max);
-  const mid = items.filter(i => i.rating === '△').sort((a,b) => b.max - a.max);
+  // GBPは優先度を下げる（他の×項目より後ろに）
+  const priorityWeight = name => name === 'Googleビジネスプロフィール' ? -5 : 0;
+  const low = items.filter(i => i.rating === '×').sort((a,b) => (b.max + priorityWeight(b.name)) - (a.max + priorityWeight(a.name)));
+  const mid = items.filter(i => i.rating === '△').sort((a,b) => (b.max + priorityWeight(b.name)) - (a.max + priorityWeight(a.name)));
   return [...low, ...mid].slice(0, 5).map((item, i) => {
     const msg = msgs[item.name] || { title:item.name+'の改善', desc:item.comment };
     return { rank: i+1, ...msg };

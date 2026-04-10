@@ -779,9 +779,20 @@ function buildPriorities(items) {
     'コラム':                     { title:'コラム定期更新', desc:'月1本以上のペースで専門コンテンツを発信。AIの情報収集源として継続的な更新が必要。' },
     'プレスリリース/メディア掲載': { title:'PR・メディア掲載', desc:'PRTIMESで月1本配信。被リンク獲得とDR向上に直結する。' },
   };
-  const low = items.filter(i => i.rating === '×').sort((a,b) => b.max - a.max);
-  const mid = items.filter(i => i.rating === '△').sort((a,b) => b.max - a.max);
-  return [...low, ...mid].slice(0, 5).map((item, i) => {
+  // 優先度の重み付け：Instagram上位固定・DR向上は下げる・GBPは最後
+  const priorityWeight = name => {
+    if (name === 'Instagram') return 20;
+    if (name === 'ドメインパワー(DR)') return -15;
+    if (name === 'Googleビジネスプロフィール') return -5;
+    return 0;
+  };
+  const low = items.filter(i => i.rating === '×').sort((a,b) => (b.max + priorityWeight(b.name)) - (a.max + priorityWeight(a.name)));
+  const mid = items.filter(i => i.rating === '△').sort((a,b) => (b.max + priorityWeight(b.name)) - (a.max + priorityWeight(a.name)));
+
+  const gbpItem = items.find(i => i.name === 'Googleビジネスプロフィール');
+  const others = [...low, ...mid].filter(i => i.name !== 'Googleビジネスプロフィール').slice(0, 4);
+  const top5 = gbpItem ? [...others, gbpItem] : others;
+  return top5.slice(0, 5).map((item, i) => {
     const msg = msgs[item.name] || { title:item.name+'の改善', desc:item.comment };
     return { rank: i+1, ...msg };
   });

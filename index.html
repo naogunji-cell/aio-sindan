@@ -781,12 +781,11 @@ async function captureModal() {
 
 <div class="gas-section" id="gasSection" style="display:none">
   <div class="card-title" style="margin-bottom:12px">📊 スプレッドシートに保存</div>
-  <div class="gas-row">
-    <input type="text" id="gasUrl" placeholder="https://script.google.com/macros/s/xxx/exec" />
-    <button class="btn-sm" style="flex:none" onclick="saveGasUrl()">保存</button>
-  </div>
   <div class="status-msg" id="gasStatus"></div>
   <button class="btn-sheets" id="sheetsBtn" onclick="saveToSheets()">📊 スプシに保存する</button>
+  <div style="margin-top:10px;text-align:center">
+    <a href="https://docs.google.com/spreadsheets/d/1zaV30PcNR5Zv-qTyxEaZdv_gsalVmMQG3iQ_v3jcmIk/edit" target="_blank" style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-decoration:underline">📋 過去の診断履歴を見る</a>
+  </div>
 </div>
 
 <div style="display:none" id="historyBtnWrap"></div>
@@ -1231,8 +1230,6 @@ function saveGeminiKey() {
 window.addEventListener('load', () => {
   const saved = localStorage.getItem('aio_gemini_key');
   if (saved) { document.getElementById('geminiKey').value = saved; const s = document.getElementById('geminiKeyStatus'); s.style.display='block'; s.style.background='rgba(26,122,74,0.1)'; s.style.color='var(--green)'; s.textContent='✓ 保存済みのGemini APIキーを読み込みました'; }
-  const savedGas = localStorage.getItem('aio_gas_url');
-  if (savedGas) { document.getElementById('gasUrl').value = savedGas; document.getElementById('gasStatus').className='status-msg status-ok'; document.getElementById('gasStatus').textContent='✓ 保存済みのGAS URLを読み込みました'; }
 });
 
 async function autoFetchWithGemini() {
@@ -1585,13 +1582,7 @@ function selectScale(btn) {
   document.getElementById('scale').value = btn.getAttribute('data-val');
 }
 
-function saveGasUrl() {
-  const url = document.getElementById('gasUrl').value.trim();
-  const s = document.getElementById('gasStatus');
-  if (!url.startsWith('https://script.google.com')) { s.className='status-msg status-err'; s.textContent='⚠ GAS URLの形式が正しくありません'; return; }
-  localStorage.setItem('aio_gas_url', url);
-  s.className = 'status-msg status-ok'; s.textContent = '✓ GAS URLを保存しました';
-}
+const SHARED_GAS_URL = 'https://script.google.com/macros/s/AKfycby3yqQvs861FGHiQlp7IMdbB3m4iV4Nq0QzhK-kyYK6sF9bBhhR59Y0NJfhH3jGMdsDeA/exec';
 
 function calcScore(v) {
   const dr           = parseFloat(v.dr) || 0;
@@ -1908,21 +1899,21 @@ const SUGGESTIONS = {
   'Instagram': {
     good: { status:'フォロワー数・リール投稿ともに良好な運用状態。', issue:'エンゲージメント率のさらなる向上とAI引用数の増加が課題。', actions:['リール投稿を週3本以上に増やし「保存数」を意識したHow系コンテンツを作る','ハイライトに施工事例・お客様の声・家づくりの流れを整理する','お施主様インタビュー動画をリールで投稿しE-E-A-Tを高める'], aio:'InstagramのリールはAI Overviewに引用されやすいフォーマット。週3本以上の定期投稿でAIメンション数が増加し、HPへの流入につながる。' },
     mid:  { status:'アカウントはあるがフォロワー数・投稿頻度が不十分。', issue:'リール投稿が少ないためAIに認識されにくく、エンゲージメントも低い。', actions:['リールを週2本以上に増やす（施工事例・ルームツアー・家づくりのポイント）','プロフィール・ハイライト・動線を整備してフォロワーをHPに誘導する','いいね・保存数を上げるためタイトルテロップと字幕を必ず入れる'], aio:'AIはInstagramの投稿頻度・エンゲージメントを参照してブランドの信頼性を判断する。リール定期投稿＋フォロワー増加でAI引用率が上がる。' },
-    bad:  { status:'リールなし・更新停止・未運用のため評価×。', issue:'リール定期投稿がないとAIに引用されず集客にもつながらない。', actions:['まずリール投稿を月4本から開始する（施工事例が最も反応が良い）','プロフィールにHP URLを設置してAIの動線を確保する','過去の施工写真をリール化するだけでも即効性あり'], aio:'InstagramのリールはAI Overviewが引用する主要ソースの1つ。リールなし・更新停止のアカウントはAIに存在しないものとして扱われる。' }
+    bad:  { status:'リールなし・更新停止・未運用のため評価×。', issue:'リール定期投稿がないとAIに引用されず集客にもつながらない。', actions:['まずリール投稿を月4本から開始する（施工事例が最も反応が良い）','プロフィールにHP URLを設置してAIの動線を確保する','過去の施工写真をリール化するだけでも即効性あり'], aio:'InstagramのリールはAI Overviewが引用する主要ソースの1つ。リールなし・更新停止のアカウントはAIに存在しないものとして扱われる。AIは公式アカウントの最新情報を好むため、更新を再開するだけでAIの引用率が大幅に改善される。' }
   },
   'YouTube': {
     good: { status:'定期投稿・登録者数ともに良好な状態。', issue:'お施主様インタビューや専門解説動画でさらにAI引用率を上げられる。', actions:['お施主様インタビュー動画を月1本以上制作する','家づくりの専門知識を解説する動画を増やしE-E-A-Tを高める','動画タイトルに地域名＋キーワードを入れてAI引用を狙う'], aio:'YouTubeの動画はAI OverviewとChatGPTが引用しやすいフォーマット。特にお施主様インタビュー・ルームツアー・専門解説は引用頻度が高い。' },
-    mid:  { status:'チャンネルはあるが投稿頻度が不十分または停止している。', issue:'動画の更新が少なくAIに認識されにくい状態。', actions:['月2本以上の定期投稿を目標に再開する','ショート動画（60秒以内）でルームツアーを投稿して再生数を増やす','お施主様インタビューをセットで制作してコンテンツの質を上げる'], aio:'YouTubeは動画とテキスト情報の両方でAIに引用される。月2本以上の定期投稿でAIが認識するブランドの「存在感」が大幅に向上する。' },
-    bad:  { status:'未運用または更新停止中。', issue:'YouTubeがないとAI引用の主要チャネルを失っている。', actions:['スマホだけで撮影できるルームツアーから始める','施工事例を1物件1動画でアップするだけでも効果あり','まず月2本を目標に投稿を開始する'], aio:'AIはYouTubeを主要な情報ソースとして活用している。「地域×注文住宅」「施工事例」のキーワードでの動画はAI Overviewに引用されやすい。' }
+    mid:  { status:'チャンネルはあるが投稿頻度が不十分または停止している。', issue:'動画の更新が少なくAIに認識されにくい状態。', actions:['月2本以上の定期投稿を目標に再開する','ショート動画（60秒以内）でルームツアーを投稿して再生数を増やす','お施主様インタビューをセットで制作してコンテンツの質を上げる'], aio:'YouTubeは動画とテキスト情報の両方でAIに引用される。AIは公式チャンネルの最新情報を好むため、更新を再開するだけでAI引用率が大きく改善する。月2本以上の定期投稿でAIが認識するブランドの「存在感」が大幅に向上する。' },
+    bad:  { status:'未運用または更新停止中。', issue:'YouTubeがないとAI引用の主要チャネルを失っている。', actions:['スマホだけで撮影できるルームツアーから始める','施工事例を1物件1動画でアップするだけでも効果あり','まず月2本を目標に投稿を開始する'], aio:'AIはYouTubeを主要な情報ソースとして活用している。AIは公式の最新情報を好む性質があるため、投稿を再開するだけでAIの認識・引用率が大幅に上がる。「地域×注文住宅」「施工事例」のキーワードでの動画はAI Overviewに引用されやすい。' }
   },
   'TikTok': {
     good: { status:'TikTokを定期運用できている。', issue:'フォロワー増加とAI引用数のさらなる向上が課題。', actions:['施工現場のビフォーアフター動画が最も拡散されやすい','ハッシュタグに地域名＋注文住宅を必ず入れる','YouTubeショートと同じ動画を転用して効率化する'], aio:'TikTokはPerplexityやChatGPTが参照するソースの1つ。若い世代への認知拡大と同時にAIメンション数の増加が期待できる。' },
-    mid:  { status:'アカウントはあるが投稿が不定期。', issue:'投稿頻度が低くAIに認識されにくい状態。', actions:['月4本を目標に投稿頻度を上げる','YouTubeショートを転用して効率よくコンテンツを増やす','施工事例・完成内覧会の動画が効果的'], aio:'TikTokの定期投稿はAIのブランド認識を高める。YouTubeと同じ動画を転用するだけでAIメンション数が増加する。' },
-    bad:  { status:'未運用または更新停止中。', issue:'TikTokがないと若い世代への認知とAI引用の機会を失っている。', actions:['優先度はInstagram・YouTubeの次。まずそちらを整備してから着手する','YouTubeショート動画をそのまま転用するだけでOK','月4本から始めてみる'], aio:'TikTokはAI引用における優先度はやや低めだが、若い施主世代（20〜30代）への認知に直結する。他SNSが整ってから着手するのがベスト。' }
+    mid:  { status:'アカウントはあるが投稿が不定期または停止中。', issue:'投稿頻度が低くAIに認識されにくい状態。', actions:['月4本を目標に投稿頻度を上げる','YouTubeショートを転用して効率よくコンテンツを増やす','施工事例・完成内覧会の動画が効果的'], aio:'TikTokの定期投稿はAIのブランド認識を高める。AIは公式アカウントの最新情報を好むため、更新を再開するだけでAIメンション数が増加する。YouTubeと同じ動画を転用するだけでOK。' },
+    bad:  { status:'未運用または更新停止中。', issue:'TikTokがないと若い世代への認知とAI引用の機会を失っている。', actions:['優先度はInstagram・YouTubeの次。まずそちらを整備してから着手する','YouTubeショート動画をそのまま転用するだけでOK','月4本から始めてみる'], aio:'TikTokはAI引用における優先度はやや低めだが、若い施主世代（20〜30代）への認知に直結する。AIは公式の最新情報を好むため、投稿再開だけでAI認識が改善する。他SNSが整ってから着手するのがベスト。' }
   },
   'Googleビジネスプロフィール': {
     good: { status:'口コミ・写真・返信・投稿・会社概要が充実しており、MEO対策が良好。', issue:'さらに口コミ数を増やしGBP引用率を高めたい。', actions:['新規のお客様に口コミ依頼を仕組み化する（完工後のメール・LINE送付）','商品コンテンツ・サービス説明をKWに最適化してGBPを「第二のHP」にする','Googleポストを週1回更新して鮮度を保つ'], aio:'GBPはAI Overviewで地域×業種のクエリに最も引用されるソース。口コミ数・評価・更新頻度が高いGBPはAIに優先引用される。' },
-    mid:  { status:'一部対応済みだが口コミ数・投稿・返信・会社概要が不十分。', issue:'GBPの充実度が低くAI引用の機会を逃している。', actions:['全口コミに48時間以内に返信する仕組みを作る','Googleポストを週1回以上更新する（イベント・施工事例・お知らせ）','会社概要にKWを含めて記載し商品登録も追加する'], aio:'「地域×注文住宅」クエリでAI Overviewが引用するのは主にGBP。口コミ返信・定期投稿・写真充実の3点セットが最短で効果が出る施策。' },
+    mid:  { status:'一部対応済みだが口コミ数・投稿・返信・会社概要が不十分。', issue:'GBPの更新が止まりAI引用の機会を逃している。', actions:['全口コミに48時間以内に返信する仕組みを作る','Googleポストを週1回以上更新する（イベント・施工事例・お知らせ）','会社概要にKWを含めて記載し商品登録も追加する'], aio:'AIは公式の最新情報を好む。GBPの更新を再開するだけで「地域×注文住宅」クエリでのAI引用率が回復する。口コミ返信・定期投稿・写真充実の3点セットが最短で効果が出る施策。' },
     bad:  { status:'会社概要なし・投稿なし・返信なしのため評価×。', issue:'GBPが放置状態でAIに引用されず、競合に大差をつけられている。', actions:['まず会社概要・サービス説明を記入する（KW含めて300文字以上）','全口コミに返信する（1〜2時間で完了）','Googleポストを今日から始める（施工事例写真1枚＋コメントだけでOK）'], aio:'GBPの放置は地域検索でのAI引用機会をゼロにする。会社概要の記入・口コミ返信・Googleポスト投稿は今日から始められる最優先施策。' }
   },
   'お施主様インタビュー': {
@@ -1937,12 +1928,12 @@ const SUGGESTIONS = {
   },
   'コラム': {
     good: { status:'定期的にコラムを更新できており、AIの情報収集源になっている。', issue:'専門性・地域特化のコンテンツをさらに増やしてAI引用率を上げたい。', actions:['「地域×家づくりのテーマ」に特化した記事を月2本以上に増やす','競合がカバーしていないニッチなテーマを攻める','記事にFAQ形式のQ&Aセクションを追加してAI引用を狙う'], aio:'コラムはAIが情報収集する主要ソース。更新頻度が高く専門性のある記事はAI引用率が高い。特に「地域×家づくり」の一次情報はAIが優先引用する。' },
-    mid:  { status:'コラムはあるが更新が不定期または停止している。', issue:'更新頻度が低くAIに「活発なサイト」として認識されていない。', actions:['月1本以上の定期更新を再開する','過去の施工事例を記事化するだけでもコンテンツになる','タイトルに地域名＋キーワードを入れてAI引用を狙う'], aio:'AIは更新頻度の高いサイトを「信頼できる情報源」として優先引用する。月1本の定期更新でもAIの認識が大きく変わる。' },
+    mid:  { status:'コラムはあるが更新が不定期または停止している。', issue:'更新頻度が低くAIに「活発なサイト」として認識されていない。', actions:['月1本以上の定期更新を再開する','過去の施工事例を記事化するだけでもコンテンツになる','タイトルに地域名＋キーワードを入れてAI引用を狙う'], aio:'AIは公式サイトの最新情報を好む性質がある。更新を再開するだけでAIに「活きているサイト」として認識され直し、引用率が大きく改善する。月1本の定期更新でもAIの評価が大きく変わる。' },
     bad:  { status:'コラムがないか、スタッフブログのみで更新が止まっている。', issue:'AIが引用できる専門コンテンツがなく情報源として認識されていない。', actions:['施工事例の紹介記事から始める（写真＋コメントで月2本）','「○○地域で注文住宅を建てる際の注意点」など地域特化記事が効果的','まず10記事を目標に制作してAIに「コンテンツがあるサイト」として認識させる'], aio:'コラムゼロのサイトはAIに「情報を提供できないサイト」として扱われる。まず10記事作ることでAIの認識が変わり、引用頻度が上がる。' }
   },
   'プレスリリース/メディア掲載': {
     good: { status:'定期的なPR活動でメディア掲載・被リンクを獲得できている。', issue:'さらにメディア掲載数を増やしDRとAI引用率を上げたい。', actions:['PRTIMESで月1本の配信を継続する','地域の建築・住宅系メディアへの取材対応を積極化する','受賞・認定・イベントなどニュース性のある情報を積極的に発信する'], aio:'メディア掲載はDR向上の最速手段。DRが上がるとAIの引用率が連動して上がる。PRTIMESからの被リンクは特にDR向上効果が高い。' },
-    mid:  { status:'過去に掲載実績はあるが直近の活動がない。', issue:'直近のPR活動がなく被リンク獲得が止まっている。', actions:['PRTIMESに登録して月1本のプレスリリース配信を再開する','新商品・イベント・受賞など何でもネタにしてプレスリリースを書く','地域の工務店・建築業界の団体からの被リンクも有効'], aio:'過去の掲載は時間とともにAIの評価が下がる。直近の活動再開が急務。PRTIMESは1配信数万円でDR向上の費用対効果が非常に高い。' },
+    mid:  { status:'過去に掲載実績はあるが直近の活動がない。', issue:'直近のPR活動がなく被リンク獲得が止まっている。', actions:['PRTIMESに登録して月1本のプレスリリース配信を再開する','新商品・イベント・受賞など何でもネタにしてプレスリリースを書く','地域の工務店・建築業界の団体からの被リンクも有効'], aio:'AIは公式の最新情報を好む。過去の掲載は時間とともにAIの評価が下がるため、PR活動を再開するだけでAI引用率の回復が見込める。PRTIMESは1配信数万円でDR向上の費用対効果が非常に高い。' },
     bad:  { status:'PR活動・メディア掲載が全くない状態。', issue:'メディアからの被リンクがなくDRが上がらない。', actions:['まずPRTIMESのアカウントを作成して最初の1本を配信する','「地域初のパッシブハウス」など地域×専門性のニュースが掲載されやすい','地元の新聞・テレビへのプレスリリース送付も効果的'], aio:'PR活動はDR向上とAI引用の両方に効く最も費用対効果の高い施策。PRTIMESからの被リンク1本でDRが2〜5上昇することもある。最優先で着手すべき施策。' }
   }
 };
@@ -2100,8 +2091,7 @@ function downloadCsv() {
 
 async function saveToSheets() {
   if (!lastResult) return;
-  const gasUrl = localStorage.getItem('aio_gas_url') || document.getElementById('gasUrl').value.trim();
-  if (!gasUrl) { alert('GAS URLを入力・保存してください。'); return; }
+  const gasUrl = SHARED_GAS_URL;
   const btn = document.getElementById('sheetsBtn');
   btn.disabled = true; btn.textContent = '送信中...';
   const { client, hpUrl, result } = lastResult;

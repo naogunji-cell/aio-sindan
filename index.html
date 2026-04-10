@@ -1976,16 +1976,16 @@ function buildPriorities(items) {
     if (name === 'Googleビジネスプロフィール') return -5;
     return 0;
   };
-  const low = items.filter(i => i.rating === '×').sort((a,b) => (b.max + priorityWeight(b.name)) - (a.max + priorityWeight(a.name)));
-  const mid = items.filter(i => i.rating === '△').sort((a,b) => (b.max + priorityWeight(b.name)) - (a.max + priorityWeight(a.name)));
+  const low = items.filter(i => i.rating === '×' && i.name !== 'ドメインパワー(DR)').sort((a,b) => b.max - a.max);
+const mid = items.filter(i => i.rating === '△' && i.name !== 'ドメインパワー(DR)').sort((a,b) => b.max - a.max);
 
-  const gbpItem = items.find(i => i.name === 'Googleビジネスプロフィール');
-  const others = [...low, ...mid].filter(i => i.name !== 'Googleビジネスプロフィール').slice(0, 4);
-  const top5 = gbpItem ? [...others, gbpItem] : others;
-  return top5.slice(0, 5).map((item, i) => {
-    const msg = msgs[item.name] || { title:item.name+'の改善', desc:item.comment };
-    return { rank: i+1, ...msg };
-  });
+const gbpItem = items.find(i => i.name === 'Googleビジネスプロフィール');
+const others = [...low, ...mid].filter(i => i.name !== 'Googleビジネスプロフィール').slice(0, 4);
+const top5 = gbpItem ? [...others, gbpItem] : others;
+return top5.slice(0, 5).map((item, i) => {
+  const msg = msgs[item.name] || { title:item.name+'の改善', desc:item.comment };
+  return { rank: i+1, ...msg };
+});
 }
 
 function runDiagnosis() {
